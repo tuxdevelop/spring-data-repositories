@@ -6,3 +6,6 @@ INSERT INTO Customer (id, firstName,lastName,contact_id) values (1, 'Donnie','Da
 INSERT INTO Customer (id, firstName,lastName,contact_id) values (2, 'Linus','Torvalds',2);
 INSERT INTO Customer (id, firstName,lastName,contact_id) values (3, 'Frank','Drebin',3);
 
+INSERT INTO Orders (id,description,price,customer_id) values(1,'Bunny Mask',39.99,1);
+INSERT INTO Orders (id,description,price,customer_id) values(2,'Tux',19.49,2);
+

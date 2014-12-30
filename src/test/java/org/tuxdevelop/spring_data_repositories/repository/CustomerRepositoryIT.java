@@ -28,6 +28,11 @@ public class CustomerRepositoryIT {
     private CustomerRepository customerRepository;
 
     /*
+     * Added at Part 4, to delete referenced Customers
+     */
+    @Autowired
+    private OrderCrudRepository orderCrudRepository;
+    /*
      * SIMPLE FINDER - Part 1
      */
 
@@ -106,6 +111,7 @@ public class CustomerRepositoryIT {
 
     @Test
     public void deleteAllIT() {
+        orderCrudRepository.deleteAll();
         customerRepository.deleteAll();
         final long count = customerRepository.count();
         Assert.assertEquals(0, count);
