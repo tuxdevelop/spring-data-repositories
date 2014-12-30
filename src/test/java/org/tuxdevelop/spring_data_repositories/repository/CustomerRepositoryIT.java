@@ -5,6 +5,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -12,6 +15,7 @@ import org.tuxdevelop.spring_data_repositories.configuration.PersistenceConfigur
 import org.tuxdevelop.spring_data_repositories.domain.Contact;
 import org.tuxdevelop.spring_data_repositories.domain.Customer;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -122,5 +126,66 @@ public class CustomerRepositoryIT {
         ids.add(3L);
         final List<Customer> customers = customerRepository.findAll(ids);
         Assert.assertEquals(2, customers.size());
+    }
+
+    /*
+     * PAGING AND SORTING - Part 3
+     */
+
+    @Test
+    public void findAllPage(){
+        final Page<Customer> customerPage = customerRepository.findAll(new PageRequest(0,2));
+        final int size = customerPage.getSize();
+        Assert.assertEquals(2,size);
+        Assert.assertTrue(customerPage.isFirst());
+        Assert.assertTrue(customerPage.hasNext());
+        Assert.assertFalse(customerPage.isLast());
+    }
+
+    @Test
+    public void findAllPageWithSort(){
+        final Page<Customer> customerPage = customerRepository.findAll(new PageRequest(0,2,new Sort(Sort.Direction
+                .ASC,"firstName")));
+        final int size = customerPage.getSize();
+        Assert.assertEquals(2,size);
+        final List<Customer> customers = customerPage.getContent();
+        final Customer firstCustomer = customers.get(0);
+        final Customer secondCustomer = customers.get(1);
+        Assert.assertEquals("Donnie",firstCustomer.getFirstName());
+        Assert.assertEquals("Frank",secondCustomer.getFirstName());
+    }
+
+    @Test
+    public void finalAllSort(){
+        final Iterable<Customer> customers = customerRepository.findAll(new Sort(Sort.Direction.DESC, "lastName"));
+        final Iterator<Customer> iterator = customers.iterator();
+        final Customer firstCustomer = iterator.next();
+        Assert.assertEquals("Torvalds",firstCustomer.getLastName());
+        final Customer secondCustomer = iterator.next();
+        Assert.assertEquals("Drebin",secondCustomer.getLastName());
+        final Customer thirdCustomer = iterator.next();
+        Assert.assertEquals("Darko",thirdCustomer.getLastName());
+    }
+
+     /*
+     * CUSTOMIZED QUERIES - Part 3
+     */
+
+    @Test
+    public void findCustomersByContactCityIT(){
+        final List<Customer> customers = customerRepository.findCustomersByContactCity("DonnieTown");
+        Assert.assertEquals(1,customers.size());
+    }
+
+    @Test
+    public void findCustomersByCityIT(){
+        final List<Customer> customers = customerRepository.findCustomersByCity("DonnieTown");
+        Assert.assertEquals(1,customers.size());
+    }
+
+    @Test
+    public void findCustomersByCityNativeIT(){
+        final List<Customer> customers = customerRepository.findCustomerByCityNative("DonnieTown");
+        Assert.assertEquals(1,customers.size());
     }
 }
