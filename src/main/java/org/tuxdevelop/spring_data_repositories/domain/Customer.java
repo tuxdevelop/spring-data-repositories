@@ -1,13 +1,10 @@
 package org.tuxdevelop.spring_data_repositories.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.Table;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+
+import javax.persistence.*;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -20,7 +17,6 @@ public class Customer extends AbstractEntity {
 
 	private String firstName;
 	private String lastName;
-	@Column(name = "contact_id")
-	@PrimaryKeyJoinColumn
+	@OneToOne(orphanRemoval = true)
 	private Contact contact;
 }

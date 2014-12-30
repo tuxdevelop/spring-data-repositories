@@ -1,17 +1,16 @@
 package org.tuxdevelop.spring_data_repositories.domain;
 
-import java.io.Serializable;
+import lombok.Data;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-
-import lombok.Data;
+import java.io.Serializable;
 
 @Data
 @MappedSuperclass
-public class AbstractEntity implements Serializable {
+public abstract class AbstractEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
