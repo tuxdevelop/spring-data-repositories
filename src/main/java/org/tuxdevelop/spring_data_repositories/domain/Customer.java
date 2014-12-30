@@ -17,6 +17,6 @@ public class Customer extends AbstractEntity {
 
 	private String firstName;
 	private String lastName;
-	@OneToOne(orphanRemoval = true)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	private Contact contact;
 }

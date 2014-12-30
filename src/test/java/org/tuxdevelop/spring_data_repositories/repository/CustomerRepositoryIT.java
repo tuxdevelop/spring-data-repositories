@@ -5,38 +5,122 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.tuxdevelop.spring_data_repositories.configuration.PersistenceConfiguration;
+import org.tuxdevelop.spring_data_repositories.domain.Contact;
 import org.tuxdevelop.spring_data_repositories.domain.Customer;
 
-import javax.transaction.Transactional;
-import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = PersistenceConfiguration.class)
-@Transactional
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class CustomerRepositoryIT {
 
     @Autowired
     private CustomerRepository customerRepository;
 
+    /*
+     * SIMPLE FINDER - Part 1
+     */
+
     @Test
-    public void findOneIT(){
+    public void findOneIT() {
         final Customer customer = customerRepository.findOne(1L);
         Assert.assertNotNull(customer);
-        Assert.assertEquals("Donnie",customer.getFirstName());
-        Assert.assertEquals("Darko",customer.getLastName());
+        Assert.assertEquals("Donnie", customer.getFirstName());
+        Assert.assertEquals("Darko", customer.getLastName());
     }
 
     @Test
-    public void findByFirstNameIT(){
-        final Iterable<Customer> customers = customerRepository.findByFirstName("Frank");
+    public void findByFirstNameIT() {
+        final List<Customer> customers = customerRepository.findByFirstName("Frank");
         Assert.assertNotNull(customers);
-        final Iterator<Customer> iterator = customers.iterator();
-        final Customer customer = iterator.next();
+        Assert.assertEquals(1, customers.size());
+        final Customer customer = customers.get(0);
         Assert.assertNotNull(customer);
-        Assert.assertEquals("Frank",customer.getFirstName());
-        Assert.assertFalse(iterator.hasNext());
+        Assert.assertEquals("Frank", customer.getFirstName());
+    }
+
+    /*
+     * CRUD - Part 2
+     */
+
+    //ADD
+
+    @Test
+    public void saveCustomerIT() {
+        final Customer customer = new Customer();
+        customer.setFirstName("Darth");
+        customer.setLastName("Vader");
+        final Contact contact = new Contact();
+        contact.setZipCode("99999");
+        contact.setEmailAddress("vader@empire.com");
+        contact.setStreetLine("Bridge");
+        contact.setCity("Executor");
+        customer.setContact(contact);
+
+        final Customer savedCustomer = customerRepository.save(customer);
+
+        Assert.assertNotNull(savedCustomer);
+        Assert.assertEquals("Darth", savedCustomer.getFirstName());
+        Assert.assertEquals("Vader", savedCustomer.getLastName());
+        final Contact savedContact = customer.getContact();
+        Assert.assertNotNull(savedContact);
+        Assert.assertEquals("vader@empire.com", savedContact.getEmailAddress());
+    }
+
+    // UPDATE
+
+    @Test
+    public void saveCustomerMergeIT() {
+        final Customer customer = customerRepository.findOne(1L);
+        Assert.assertNotNull(customer);
+        customer.getContact().setEmailAddress("donnie@empire.com");
+        final Customer updatedCustomer = customerRepository.save(customer);
+        Assert.assertNotNull(updatedCustomer);
+        Assert.assertEquals("donnie@empire.com", updatedCustomer.getContact().getEmailAddress());
+        final Customer fetchedCustomer = customerRepository.findOne(1L);
+        Assert.assertEquals(updatedCustomer, fetchedCustomer);
+    }
+
+    // DELETE
+
+    @Test
+    public void deleteCustomerIT() {
+        final Customer customer = customerRepository.findOne(3L);
+        Assert.assertNotNull(customer);
+        customerRepository.delete(customer);
+        final Customer deletedCustomer = customerRepository.findOne(3L);
+        Assert.assertNull(deletedCustomer);
+        final long count = customerRepository.count();
+        Assert.assertEquals(2, count);
+    }
+
+    @Test
+    public void deleteAllIT() {
+        customerRepository.deleteAll();
+        final long count = customerRepository.count();
+        Assert.assertEquals(0, count);
+    }
+
+    // GET
+
+    @Test
+    public void findAllIT() {
+        final List<Customer> customers = customerRepository.findAll();
+        Assert.assertEquals(3, customers.size());
+    }
+
+    @Test
+    public void findAllWithInIdsIT() {
+        final List<Long> ids = new LinkedList<>();
+        ids.add(1L);
+        ids.add(3L);
+        final List<Customer> customers = customerRepository.findAll(ids);
+        Assert.assertEquals(2, customers.size());
     }
 }

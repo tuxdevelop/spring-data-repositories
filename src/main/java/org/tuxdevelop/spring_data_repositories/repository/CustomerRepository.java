@@ -1,13 +1,14 @@
 package org.tuxdevelop.spring_data_repositories.repository;
 
 
-import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.CrudRepository;
 import org.tuxdevelop.spring_data_repositories.domain.Customer;
 
-public interface CustomerRepository extends Repository<Customer, Long>{
+import java.util.List;
 
-    Customer findOne(final Long id);
+public interface CustomerRepository extends CrudRepository<Customer, Long> {
 
-    Iterable<Customer> findByFirstName(final String firstName);
-
+    List<Customer> findByFirstName(final String firstName);
+    List<Customer> findAll();
+    List<Customer> findAll(Iterable<Long> ids);
 }
