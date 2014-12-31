@@ -10,6 +10,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.tuxdevelop.spring_data_repositories.configuration.PersistenceConfiguration;
 import org.tuxdevelop.spring_data_repositories.domain.Customer;
 import org.tuxdevelop.spring_data_repositories.domain.Order;
@@ -95,6 +97,22 @@ public class OrderRepositoryIT {
         final Order order = iterator.next();
         Assert.assertEquals("Bunny Mask",order.getDescription());
         Assert.assertEquals(new Double(39.99),order.getPrice());
+        Assert.assertFalse(iterator.hasNext());
+    }
+
+
+    /*
+     * PART 6 - Custom Implementation
+     */
+
+    @Test
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void deleteOrdersBeyondPriceIT(){
+        orderRepository.deleteOrderBeyondPrice(20.00);
+        Iterable<Order> orders = orderRepository.findAll();
+        final Iterator<Order> iterator = orders.iterator();
+        final Order currentOrder = iterator.next();
+        Assert.assertFalse(currentOrder.getPrice()>20.00);
         Assert.assertFalse(iterator.hasNext());
     }
 
