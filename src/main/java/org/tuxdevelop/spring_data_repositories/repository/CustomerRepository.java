@@ -2,6 +2,7 @@ package org.tuxdevelop.spring_data_repositories.repository;
 
 
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.querydsl.QueryDslPredicateExecutor;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,7 +10,8 @@ import org.tuxdevelop.spring_data_repositories.domain.Customer;
 
 import java.util.List;
 
-public interface CustomerRepository extends PagingAndSortingRepository<Customer, Long> {
+public interface CustomerRepository extends PagingAndSortingRepository<Customer, Long>,
+        QueryDslPredicateExecutor<Customer> {
 
     List<Customer> findByFirstName(final String firstName);
 

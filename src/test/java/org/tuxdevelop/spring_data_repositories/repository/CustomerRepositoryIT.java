@@ -1,6 +1,7 @@
 package org.tuxdevelop.spring_data_repositories.repository;
 
 
+import com.mysema.query.types.expr.BooleanExpression;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.tuxdevelop.spring_data_repositories.configuration.PersistenceConfiguration;
 import org.tuxdevelop.spring_data_repositories.domain.Contact;
 import org.tuxdevelop.spring_data_repositories.domain.Customer;
+import org.tuxdevelop.spring_data_repositories.domain.QCustomer;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -194,4 +196,52 @@ public class CustomerRepositoryIT {
         final List<Customer> customers = customerRepository.findCustomerByCityNative("DonnieTown");
         Assert.assertEquals(1,customers.size());
     }
+
+    /*
+     * PART 5 - Dynamic queries
+     */
+
+    @Test
+    public void findCustomerByFirstNameIT(){
+        final QCustomer customer = QCustomer.customer;
+        final BooleanExpression firstNameEq = customer.firstName.eq("Donnie");
+        final Customer fetchedCustomer = customerRepository.findOne(firstNameEq);
+        final Customer eqCustomer = customerRepository.findOne(1L);
+        Assert.assertEquals(eqCustomer,fetchedCustomer);
+    }
+
+    @Test
+    public void findCustomerByLastNameIT(){
+        final QCustomer customer = QCustomer.customer;
+        final BooleanExpression lastNameEq = customer.lastName.eq("Darko");
+        final Customer fetchedCustomer = customerRepository.findOne(lastNameEq);
+        final Customer eqCustomer = customerRepository.findOne(1L);
+        Assert.assertEquals(eqCustomer,fetchedCustomer);
+    }
+
+    @Test
+    public void findCustomerByFirstNameAndLastNameIT(){
+        final QCustomer customer = QCustomer.customer;
+        final BooleanExpression firstNameEq = customer.firstName.eq("Donnie");
+        final BooleanExpression lastNameEq = customer.lastName.eq("Darko");
+        final Customer fetchedCustomer = customerRepository.findOne(firstNameEq.and(lastNameEq));
+        final Customer eqCustomer = customerRepository.findOne(1L);
+        Assert.assertEquals(eqCustomer,fetchedCustomer);
+    }
+
+    @Test
+    public void findCustomersByLastNameStartsWithIT(){
+        final QCustomer customer = QCustomer.customer;
+        final BooleanExpression lastNameStartsWith = customer.lastName.startsWith("D");
+        final Iterable<Customer> customers = customerRepository.findAll(lastNameStartsWith);
+        int count = 0;
+        for(final Customer c : customers){
+            Assert.assertEquals('D',c.getLastName().charAt(0));
+            count++;
+        }
+        Assert.assertEquals(2,count);
+    }
+
+
+
 }
