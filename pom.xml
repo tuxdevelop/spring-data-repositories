@@ -4,20 +4,38 @@
     <groupId>org.tuxdevelop</groupId>
     <artifactId>spring-data-repositories</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <name>spring data repositories live demo</name>
-
     <properties>
-        <spring.boot.version>1.2.0.RELEASE</spring.boot.version>
+        <spring-hateoas.version>0.17.0.RELEASE</spring-hateoas.version>
+        <assertj.version>2.0.0</assertj.version>
     </properties>
+    <name>spring data repositories live demo</name>
 
     <dependencyManagement>
         <dependencies>
+            <!-- Part 7.1 added new version of spring data release train Fowler -->
+            <!-- spring data release train -->
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-releasetrain</artifactId>
+                <version>Fowler-RELEASE</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- Part 7.1 updated platform bom to 1.1.1.RELEASE -->
+            <!-- spring.io platform bom -->
             <dependency>
                 <groupId>io.spring.platform</groupId>
                 <artifactId>platform-bom</artifactId>
-                <version>1.1.0.RELEASE</version>
+                <version>1.1.1.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <!-- Part 7.1 added spring hateoas -->
+            <!-- spring hateoas -->
+            <dependency>
+                <groupId>org.springframework.hateoas</groupId>
+                <artifactId>spring-hateoas</artifactId>
+                <version>${spring-hateoas.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -39,6 +57,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+        </dependency>
+
+        <!-- spring hateoas -->
+        <dependency>
+            <groupId>org.springframework.hateoas</groupId>
+            <artifactId>spring-hateoas</artifactId>
         </dependency>
 
         <!-- lombok -->
@@ -63,6 +87,19 @@
         <dependency>
             <groupId>com.mysema.querydsl</groupId>
             <artifactId>querydsl-jpa</artifactId>
+        </dependency>
+
+        <!-- assertj -->
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>

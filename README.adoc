@@ -1,0 +1,28 @@
+= Spring-Data-Repositories Deep Dive Demo
+:toc:
+
+== Description
+This is a demo project to cover basic and deeper functionality of spring data repositories.
+These topics are part of the demo and presentation
+
+* Part 0 - Set up the infrastructure for JPA
+* Part 1 - Repository Introduction
+* Part 2 - CRUD Repository
+* Part 3 - Paging & Sorting
+* Part 4 - Own Base Repositories
+* Part 5 - Dynamic Queries
+* Part 6 - Custom Repository
+* Part 7 - Spring Data Rest
+** Part 7.1 - HAL_JSON Traverson
+** Part 7.2 - Security & Bean Validation (not implemented yet)
+
+
+== Usage
+Go to http://tuxdevelop.github.io/presentations/spring_data_part_1.html#/[Spring-Data-Repositories Deep Dive
+presentation] .
+The presentation shows goals and a summary to each part. Every part is also a single commit at the
+repository, so you are able to follow the step bottom up.
+....
+ git checkout abe872ebbfe8af6f0b3712bf485a5e91c6715d8b <1>
+....
+<1> Example to checkout Part - 0
